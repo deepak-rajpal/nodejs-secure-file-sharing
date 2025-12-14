@@ -1,3 +1,5 @@
+![File Upload & Download](screenshots/nodejs-file-sharing-app.png)
+
 # 🔐 Node.js Secure File Sharing
 
 A **basic secure file sharing project** built with Node.js and MongoDB. It allows users to upload files, generate unique download links, and optionally protect them with passwords and expiration times.
@@ -166,15 +168,6 @@ GET /api/files/download/:uuid?password=yourpassword
 
 ---
 
-## 📸 Screenshots
-
-### File Upload Interface
-![Upload File](screenshots/upload-file.png)
-
-### File Download Interface
-![Download File](screenshots/download-file.png)
-
----
 
 ## Contributing
 

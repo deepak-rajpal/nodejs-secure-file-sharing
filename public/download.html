@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Download Photo</title>
+    <!-- Tailwind CSS for styling -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg text-center">
+    <h2 class="text-2xl font-semibold mb-4">📥 Photo Download</h2>
+    <!-- Dynamic content container for file info, password prompt, or download button -->
+    <div id="content">
+        <p>Loading file info...</p>
+    </div>
+</div>
+
+<script>
+    // Extract UUID from URL query parameters
+    const params = new URLSearchParams(window.location.search);
+    const uuid = params.get('uuid');
+    const container = document.getElementById('content');
+
+    /**
+     * Load file and handle various response scenarios
+     * @param {string|null} password - Optional password for protected files
+     */
+    async function loadFile(password = null) {
+        // Build download URL with optional password parameter
+        const url = `/api/files/download/${uuid}` + (password ? `?password=${password}` : '');
+        const response = await fetch(url);
+
+        // Handle password-protected files (401: wrong password, 403: password required)
+        if (response.status === 401 || response.status === 403) {
+            container.innerHTML = `
+          <p class="mb-4 text-red-600">🔐 This file is password protected.</p>
+          <input type="password" id="inputPassword" placeholder="Enter password"
+            class="block w-full border border-gray-300 p-2 rounded mb-4" />
+          <button onclick="submitPassword()"
+            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Submit</button>
+        `;
+        } 
+        // Handle expired links (410: Gone)
+        else if (response.status === 410) {
+            container.innerHTML = `<p class="text-red-500">⏰ This link has expired.</p>`;
+        } 
+        // Handle successful file retrieval
+        else if (response.ok) {
+            // Convert response to blob and create object URL for preview
+            const blob = await response.blob();
+            const imageUrl = URL.createObjectURL(blob);
+
+            // Display image preview and download button
+            container.innerHTML = `
+          <img src="${imageUrl}" alt="Shared Photo" class="w-full rounded mb-4" />
+          <a href="${url}" download class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+            ⬇️ Download Image
+          </a>
+        `;
+        } 
+        // Handle file not found (404)
+        else {
+            container.innerHTML = `<p class="text-red-500">❌ File not found.</p>`;
+        }
+    }
+
+    /**
+     * Submit password and retry file loading
+     */
+    function submitPassword() {
+        const pass = document.getElementById('inputPassword').value;
+        loadFile(pass);
+    }
+
+    // Initial call to load file on page load
+    loadFile();
+</script>
+</body>
+</html>

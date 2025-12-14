@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Photo Uploader</title>
+    <!-- Tailwind CSS for styling -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+    <h2 class="text-2xl font-semibold mb-4">📤 Upload and Share Your Photo</h2>
+    
+    <!-- File upload form with optional password and expiration -->
+    <form id="uploadForm" class="space-y-4">
+        <!-- File input: Required field for selecting file to upload -->
+        <input type="file" id="fileInput" required class="block w-full border border-gray-300 p-2 rounded" />
+
+        <!-- Expiration input: Optional field to set link expiration in hours -->
+        <input type="number" id="expiresIn" placeholder="Expiration (hours)" class="block w-full border border-gray-300 p-2 rounded" />
+
+        <!-- Password input: Optional field to password-protect the file -->
+        <input type="password" id="password" placeholder="Optional Password" class="block w-full border border-gray-300 p-2 rounded" />
+
+        <!-- Submit button to upload file -->
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Upload</button>
+    </form>
+
+    <!-- Container to display the shareable download link after upload -->
+    <div id="link" class="mt-6 text-center text-sm text-gray-800 break-all"></div>
+</div>
+
+<script>
+    // Get references to form and link display elements
+    const form = document.getElementById('uploadForm');
+    const linkDiv = document.getElementById('link');
+
+    // Handle form submission
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault(); // Prevent default form submission
+        
+        // Get form values
+        const file = document.getElementById('fileInput').files[0];
+        const password = document.getElementById('password').value;
+        const expiresIn = document.getElementById('expiresIn').value;
+
+        // Validate file selection
+        if (!file) return alert("Please select a file");
+
+        // Create FormData object to send multipart/form-data
+        const formData = new FormData();
+        formData.append('file', file);
+        if (password) formData.append('password', password);
+        // Convert hours to seconds for expiration
+        if (expiresIn) formData.append('expiresIn', parseInt(expiresIn) * 3600);
+
+        // Send POST request to upload endpoint
+        const res = await fetch('/api/files/upload', {
+            method: 'POST',
+            body: formData
+        });
+
+        // Parse JSON response
+        const data = await res.json();
+
+        // Display shareable download link or error message
+        if (data.downloadPage) {
+            const fullLink = `${location.origin}${data.downloadPage}`;
+            linkDiv.innerHTML = `
+            ✅ Share this link:<br>
+            <a href="${fullLink}" class="text-blue-600 underline" target="_blank">${fullLink}</a>
+          `;
+        } else {
+            linkDiv.innerHTML = '❌ Upload failed.';
+        }
+    });
+</script>
+</body>
+</html>

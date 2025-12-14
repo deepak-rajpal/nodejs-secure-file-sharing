@@ -162,15 +162,11 @@ GET /api/files/download/:uuid?password=yourpassword
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+This is a learning project. Contributions are not required, but corrections, bug fixes, and feedback are appreciated.
 
 ## License
 
-ISC
-
-## Author
-
-Your Name
+This project is licensed under the MIT License.
 
 ---
 

@@ -30,16 +30,6 @@ Users can upload files through a web interface and receive a unique download lin
 
 ---
 
-## 📸 Screenshots
-
-### File Upload Interface
-![Upload File](screenshots/upload-file.png)
-
-### File Download Interface
-![Download File](screenshots/download-file.png)
-
----
-
 ## Tech Stack
 
 | Technology | Purpose |
@@ -50,6 +40,8 @@ Users can upload files through a web interface and receive a unique download lin
 | **UUID** | Generates unique identifiers for uploaded files to create secure download links |
 | **bcryptjs** | Password hashing library; encrypts passwords for secure file protection |
 | **dotenv** | Loads environment variables from .env file for secure configuration management |
+
+---
 
 ## Prerequisites
 
@@ -171,6 +163,18 @@ GET /api/files/download/:uuid?password=yourpassword
 - **Unique Identifiers**: UUIDs prevent guessing of download links
 - **Expiration Control**: Links automatically expire after specified time
 - **Download Tracking**: Monitor how many times files are accessed
+
+---
+
+## 📸 Screenshots
+
+### File Upload Interface
+![Upload File](screenshots/upload-file.png)
+
+### File Download Interface
+![Download File](screenshots/download-file.png)
+
+---
 
 ## Contributing
 
